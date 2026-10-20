@@ -140,8 +140,6 @@ def find_adb(explicit: str | None = None) -> str:
         )
     if 0 < best_version < 34:
         warn(f"using an old adb (v{best_version}) at {best} - platform-tools 34+ is recommended")
-    else:
-        info(f"adb {best_version} at {best}")
     return str(best)
 
 
@@ -739,6 +737,94 @@ def cmd_undo(adb: Adb, args) -> int:
     return 0
 
 
+# --------------------------------------------------------------------------------------
+# doctor - check the prerequisites before you start
+# --------------------------------------------------------------------------------------
+
+
+def host_memory_mb() -> tuple[int, int]:
+    """(available physical MB, available commit MB) on this computer.
+
+    The gradle build fails in a confusing way when the *commit* budget is small, so
+    report both: RAM free and how much the OS can still back with RAM + pagefile.
+    """
+    try:
+        if os.name == "nt":
+            import ctypes
+
+            class MEMORYSTATUSEX(ctypes.Structure):
+                _fields_ = [("dwLength", ctypes.c_ulong),
+                            ("dwMemoryLoad", ctypes.c_ulong),
+                            ("ullTotalPhys", ctypes.c_ulonglong),
+                            ("ullAvailPhys", ctypes.c_ulonglong),
+                            ("ullTotalPageFile", ctypes.c_ulonglong),
+                            ("ullAvailPageFile", ctypes.c_ulonglong),
+                            ("ullTotalVirtual", ctypes.c_ulonglong),
+                            ("ullAvailVirtual", ctypes.c_ulonglong),
+                            ("ullAvailExtendedVirtual", ctypes.c_ulonglong)]
+
+            stat = MEMORYSTATUSEX()
+            stat.dwLength = ctypes.sizeof(MEMORYSTATUSEX)
+            ctypes.windll.kernel32.GlobalMemoryStatusEx(ctypes.byref(stat))
+            return stat.ullAvailPhys // (1024 * 1024), stat.ullAvailPageFile // (1024 * 1024)
+        return (os.sysconf("SC_AVPHYS_PAGES") * os.sysconf("SC_PAGE_SIZE") // (1024 * 1024),
+                os.sysconf("SC_AVPHYS_PAGES") * os.sysconf("SC_PAGE_SIZE") // (1024 * 1024))
+    except Exception:
+        return 0, 0
+
+
+def cmd_doctor(adb: Adb, args) -> int:
+    """Check everything that has to be in place, and say what is missing."""
+    head("for talking to the TV")
+    try:
+        path = find_adb(args.adb)
+        v = adb_version(path)
+        (ok if v >= 34 else warn)(f"adb {v} at {path}" + ("" if v >= 34 else "  (want 34+)"))
+    except TVError as e:
+        err(str(e))
+        return 1
+
+    head("for building the home app (only needed without --apk)")
+    try:
+        jdk = find_build_jdk()
+        ok(f"JDK for gradle: {jdk}")
+    except TVError as e:
+        err(str(e))
+    sdk = os.environ.get("ANDROID_HOME") or os.environ.get("ANDROID_SDK_ROOT")
+    if not sdk:
+        local = os.environ.get("LOCALAPPDATA")
+        cand = Path(local) / "Android" / "Sdk" if local else None
+        if cand and cand.is_dir():
+            sdk = str(cand)
+    if not sdk:
+        err("Android SDK not found - set ANDROID_HOME")
+    else:
+        sdkp = Path(sdk)
+        plat = sdkp / "platforms" / "android-34" / "android.jar"
+        (ok if plat.is_file() else err)(f"android-34 platform: {plat}")
+        bt = [d.name for d in (sdkp / "build-tools").iterdir()] if (sdkp / "build-tools").is_dir() else []
+        good_bt = [b for b in bt if b.split(".")[0].isdigit() and int(b.split(".")[0]) >= 34]
+        (ok if good_bt else err)(f"build-tools 34+: {', '.join(sorted(good_bt)) or 'none'}")
+
+    ram, commit = host_memory_mb()
+    (ok if commit >= 1500 else warn)(
+        f"free memory: {ram} MB RAM, {commit} MB commit  (the build wants ~1500 MB of commit)")
+
+    head("the TV")
+    online = adb.online_devices()
+    if online:
+        ok(f"connected: {', '.join(online)}")
+    else:
+        remembered = recall_device()
+        info(f"not connected" + (f" (last one was {remembered})" if remembered else ""))
+        info("turn on Developer options > ADB debugging, then run:")
+        info("  python tvdebloat.py connect --ip <tv-ip> --scan")
+
+    print()
+    info("next: python tvdebloat.py setup --ip <tv-ip> --apk path/to/app-release.apk")
+    return 0
+
+
 def cmd_setup(adb: Adb, args) -> int:
     """The whole job in one command: connect, debloat, install the home app."""
     head("step 1 of 3 - connect")
@@ -813,6 +899,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     u = sub.add_parser("undo", help="re-enable what the last run disabled")
     u.add_argument("--dry-run", action="store_true")
+
+    sub.add_parser("doctor", help="check that everything needed is in place")
     return p
 
 
@@ -820,8 +908,8 @@ def main() -> int:
     args = build_parser().parse_args()
     try:
         adb = Adb(find_adb(args.adb))
-        if args.cmd == "connect":
-            return cmd_connect(adb, args)
+        if args.cmd in ("connect", "doctor"):
+            return cmd_connect(adb, args) if args.cmd == "connect" else cmd_doctor(adb, args)
 
         if args.serial:
             adb.serial = args.serial
@@ -855,6 +943,7 @@ def main() -> int:
             "debloat": cmd_debloat,
             "install-launcher": cmd_install_launcher,
             "undo": cmd_undo,
+            "doctor": cmd_doctor,
         }
         return handlers[args.cmd](adb, args)
     except TVError as e:

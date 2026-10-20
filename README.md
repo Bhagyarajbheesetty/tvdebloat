@@ -19,7 +19,16 @@ home screen and checks that it worked. Nothing is uninstalled, so everything can
 
 ---
 
-## 1. Prepare the TV
+## 1. Check what you have
+
+```
+python tvdebloat.py doctor
+```
+
+It prints a checklist: adb, the JDK the build needs, the Android SDK, how much memory the
+build needs, and whether a TV is connected. Fix whatever it flags before you start.
+
+## 2. Prepare the TV
 
 On the TV: **Settings → Device Preferences → About → Build** — press it 7 times to unlock
 Developer options. Then **Settings → Device Preferences → Developer options** and turn on
@@ -27,26 +36,31 @@ Developer options. Then **Settings → Device Preferences → Developer options*
 
 Find the TV's IP address under **Settings → Network**.
 
-## 2. Get the home app
+## 3. Get the home app
 
-CleanYourTV publishes no binaries, so build it once from its source:
+CleanYourTV publishes no binaries, so it has to be built once from its source. The tool can
+do that for you - it picks a JDK 17/21 by itself, because Gradle 8.9 cannot read Java 25
+class files:
 
 ```
 git clone https://github.com/Gathin23/cleanyourtv
-cd cleanyourtv/launcher
-./gradlew assembleRelease
 ```
-
-The APK lands in `launcher/app/build/outputs/apk/release/app-release.apk` (about 250 KB).
-On Windows use `gradlew.bat assembleRelease`. It needs a **JDK 17 or 21** — Gradle 8.9 cannot
-read Java 25 class files.
 
 Already have an APK? Skip this and point `--apk` at it.
 
-## 3. Run it
+## 4. Run it
+
+Everything in one command - it builds the home app, connects to the TV, disables the
+bloatware, installs the app, makes it the home screen and checks the result:
 
 ```
-python tvdebloat.py setup --ip 192.168.1.50 --apk path/to/app-release.apk
+python tvdebloat.py setup --ip 192.168.1.50 --build --project cleanyourtv
+```
+
+Or with an APK you built yourself:
+
+```
+python tvdebloat.py setup --ip 192.168.1.50 --apk cleanyourtv/launcher/app/build/outputs/apk/release/app-release.apk
 ```
 
 If the TV shows a **pairing port** and a **6-digit code** under Developer options → Wireless
@@ -62,13 +76,13 @@ about a minute.
 
 **Add `--dry-run` first** to see exactly what would change without touching anything.
 
-## 4. Check the result
+## 5. Check the result
 
 ```
 python tvdebloat.py probe
 ```
 
-Press **Home** on the remote — the new home app opens.
+Press **Home** on the remote - the new home app opens.
 
 ## Undo
 
@@ -78,11 +92,29 @@ python tvdebloat.py undo
 
 ---
 
+## How long does it take
+
+| | |
+|---|---|
+| Prepare the TV | 2 minutes, and you have to do it again after a factory reset |
+| Build the home app | one to a few minutes, the first time only (it is cached after that) |
+| Debloat + install | seconds |
+| The tool itself | one command, and it checks its own work |
+
+The one part that is not "click a button" is building the home app: it needs git, a JDK 17 or
+21 and the Android SDK, and the gradle build wants about **1.5 GB of free memory**. On a
+machine that is busy, gradle fails with a confusing `OutOfMemoryError` or
+`Native memory allocation failed` - close what you can and run `doctor` again to see the
+number it reports.
+
+---
+
 ## Commands
 
 | Command | What it does |
 |---|---|
-| `setup` | connect + debloat + install the home app (everything, in order) |
+| `setup` | build + connect + debloat + install the home app (everything, in order) |
+| `doctor` | check that adb, the JDK, the Android SDK and the memory are all in place |
 | `connect --ip <ip>` | pair and connect over WiFi |
 | `probe` | what this TV is, what claims HOME, how much RAM is free |
 | `debloat` | disable the bloatware (add `--dry-run` to preview) |
