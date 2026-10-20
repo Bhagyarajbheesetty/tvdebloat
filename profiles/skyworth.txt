@@ -1,4 +1,4 @@
-# Skyworth sets (Skyworth/Onda rebrands).
+# Skyworth sets (GSmartTV and other Skyworth/Onda rebrands).
 # The vendor home launcher is usually a plain app like com.advert.tv rather than a Google one,
 # so tvdebloat refuses to disable it unless you pass --disable-stock always.
 

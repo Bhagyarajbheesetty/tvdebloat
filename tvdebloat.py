@@ -125,7 +125,6 @@ def find_adb(explicit: str | None = None) -> str:
     if HERE.parent.is_dir():
         for sibling in sorted(HERE.parent.glob("*/adb.exe")):
             candidates.append(sibling)
-    candidates.append(Path(r"C:\adb\adb.exe"))
 
     best, best_version = None, -1
     for c in candidates:
