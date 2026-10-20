@@ -11,6 +11,12 @@ python tvdebloat.py setup --ip 192.168.1.50 --apk app-release.apk
 It connects to the TV over WiFi, turns off the bloatware, installs the home app, makes it the
 home screen and checks that it worked. Nothing is uninstalled, so everything can be put back.
 
+> The home app is **not** part of this project. It is
+> [CleanYourTV](https://github.com/Gathin23/cleanyourtv) by **Gathin**, MIT licensed
+> (© 2026 Gathin) - you build it from the source and this tool installs it.
+> See [NOTICE.md](NOTICE.md) for the full credits. This project is unofficial and not
+> endorsed by them.
+
 ---
 
 ## 1. Prepare the TV
@@ -107,6 +113,17 @@ the vendor framework service.
 - `adb` from Android platform-tools (34 or newer). The tool looks for it on `PATH`, in
   `ANDROID_HOME`/`ANDROID_HOME`/platform-tools and next to the script.
 - The TV and the computer on the same WiFi.
+
+## Credits and licence
+
+The home app this installs is **[CleanYourTV](https://github.com/Gathin23/cleanyourtv)** by
+**Gathin** - MIT, Copyright (c) 2026 Gathin. The debloat approach follows the
+[android-tv-debloat-toolkit](https://github.com/seun-novodev/android-tv-debloat-toolkit) by
+**seun-novodev** - MIT. Neither project is included in this one; no code, assets or binaries
+are copied, and nothing is downloaded on your behalf. Full details in
+[NOTICE.md](NOTICE.md).
+
+`tvdebloat` itself is MIT licensed - see [LICENSE](LICENSE).
 
 ## Notes
 

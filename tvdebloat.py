@@ -10,6 +10,17 @@ home screen and verifies it.  Everything is reversible - the tool only ever uses
 `pm disable-user`, never uninstalls, and writes an undo log.
 
 The steps can also be run one at a time: connect, probe, debloat, install-launcher, undo.
+
+Credits
+-------
+The home app this tool installs is CleanYourTV (https://github.com/Gathin23/cleanyourtv) by
+Gathin, MIT licensed, Copyright (c) 2026 Gathin.  It is not part of this project and none of
+its code or assets are included here - you build it and this tool installs it.  The debloat
+approach follows android-tv-debloat-toolkit (https://github.com/seun-novodev/android-tv-debloat-toolkit)
+by seun-novodev, MIT.  See NOTICE.md for the full credits.  This project is unofficial and is
+not endorsed by either of them.
+
+tvdebloat itself is MIT licensed, Copyright (c) 2026 Bhagyarajbheesetty.  See LICENSE.
 """
 
 from __future__ import annotations
