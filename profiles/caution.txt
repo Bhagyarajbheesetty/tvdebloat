@@ -1,0 +1,9 @@
+# Opt-in only: NOT applied by default.  Use --include-caution if you really want them.
+# These are the ones people actually miss when a tool nags them.
+
+com.google.android.marvin.talkback | caution | TalkBack screen reader - keep it if you need accessibility
+com.netflix.ninja | caution | Netflix - only disable it if you do not use the subscription
+com.google.android.youtube.tv | caution | YouTube
+com.google.android.gms | caution | Google Play services - breaks YouTube, the Play Store and casting
+com.google.android.vending | caution | Google Play Store
+com.android.vending | caution | Google Play Store

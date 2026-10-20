@@ -1,0 +1,13 @@
+# Google TV specific.
+#
+# The setup wizard is the important one: com.google.android.tungsten.setupwraith claims HOME
+# with priority=1.  cmd package set-home-activity reports "Success" and the home button
+# STILL opens the setup wizard, because the wizard outranks the launcher and Android drops
+# the HOME preference whenever the set of HOME apps changes.
+# Disable it BEFORE setting the home app, and verify afterwards.
+
+com.google.android.tungsten.setupwraith | safe | Google TV setup wizard - claims HOME with priority=1 and steals it back
+com.google.android.apps.tv.dreamx | safe | Google TV screensaver (frees ~80 MB; use the launcher's clock instead)
+com.google.android.katniss | safe | Google Assistant - voice search, frees ~180 MB
+com.google.android.voicepanel | safe | Assistant voice panel
+com.google.android.googlequicksearchbox | safe | Google search widget

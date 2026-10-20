@@ -1,0 +1,19 @@
+# Universal safe list - applies to every Android TV.
+# Format: package | risk | reason
+# "safe" = disabling breaks nothing you interact with on a TV.
+# Everything here is disabled with pm disable-user (reversible), never uninstalled.
+
+com.google.android.tvrecommendations | safe | Google TV recommendation row on the home screen
+com.google.android.leanbacklauncher.recommendations | safe | Google Shop / app recommendation row
+com.google.android.feedback | safe | crash and usage reporting
+com.google.android.onetimeinitializer | safe | one-time setup initializer
+com.google.android.partnersetup | safe | carrier / partner setup wizard
+com.google.android.syncadapters.calendar | safe | calendar sync adapter
+com.android.printspooler | safe | print spooler, unused on a TV
+com.android.dreams.basic | safe | AOSP screensaver (the launcher provides a clock instead)
+com.android.egg | safe | easter egg
+com.android.providers.calendar | safe | calendar provider
+com.android.providers.contacts | safe | contacts provider
+com.android.providers.userdictionary | safe | user dictionary provider
+com.android.adservices.api | safe | advertising ID service
+com.google.android.apps.mediashell | safe | local media playback shell

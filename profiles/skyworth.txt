@@ -1,0 +1,11 @@
+# Skyworth sets (Skyworth/Onda rebrands).
+# The vendor home launcher is usually a plain app like com.advert.tv rather than a Google one,
+# so tvdebloat refuses to disable it unless you pass --disable-stock always.
+
+com.advert.tv | safe | Skyworth vendor home launcher (replaced by CleanYourTV)
+com.coocaa.demonow.lightining | safe | Coocaa / Skyworth promo overlay
+com.smartdevice.epopplayer | safe | Skyworth promo pop-up player
+com.smartdevice.dailyshortcut | safe | Skyworth daily shortcuts (frees ~150 MB)
+com.smartdevice.livetv | caution | Skyworth live TV shortcut
+fusion.android.tv.demo | safe | factory demo app
+com.tianci.localmedia | caution | Skyworth local media player

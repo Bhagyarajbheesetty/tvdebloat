@@ -1,0 +1,17 @@
+# TCL Android TV sets.
+
+com.tcl.usercenter2 | safe | TCL home launcher
+com.tcl.usercenter | safe | TCL user center
+com.tcl.guard | safe | TCL antivirus
+com.tcl.tvweishi | safe | TCL antivirus overlay
+com.tcl.bootadservice | safe | TCL boot ads
+com.tcl.dashboard | safe | TCL dashboard
+com.tcl.overseasappshow | safe | TCL overseas app ads
+com.tcl.appmarket2 | safe | TCL app market
+com.tcl.esticker | safe | TCL stickers
+com.tcl.notereminder | safe | TCL notes and reminders
+com.tcl.gallery | safe | TCL gallery
+com.tcl.pvr.pvrplayer | safe | TCL PVR player
+com.tcl.videoplayer | safe | TCL video player
+com.tcl.messagebox | safe | TCL message box
+com.tcl.browser | caution | TCL web browser

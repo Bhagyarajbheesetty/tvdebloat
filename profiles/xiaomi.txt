@@ -1,0 +1,17 @@
+# Xiaomi / Mi TV sets (PatchWall rows, Mi content promos, telemetry).
+
+com.miui.tv.analytics | safe | Xiaomi telemetry
+com.xiaomi.statistic | safe | Xiaomi statistics
+com.mitv.tvhome.atv | safe | PatchWall home rows
+com.mitv.tvhome.michannel | safe | PatchWall channel rows
+com.mitv.tvhome.mitvplus | safe | Mi content promos
+com.xm.webcontent | safe | Mi web content row
+com.xiaomi.floatingframe | safe | floating frame promos
+com.xiaomi.mitv.tvmanager | safe | TV Manager cleaner app
+com.xiaomi.mitv.smartshare | safe | Mi share
+com.xiaomi.amazon.alexa | safe | Alexa bridge
+com.xiaomi.mimusic2 | safe | Mi Music
+com.google.android.play.games | safe | Play Games
+com.google.android.play.games.assist | safe | Play Games assistant
+com.mitv.milinkservice | caution | Mi cast - disables Chromecast-over-LAN
+com.xiaomi.mitv.updateservice | caution | firmware updates - keep this one
