@@ -380,7 +380,7 @@ def load_profile(name: str) -> list[tuple[str, str, str]]:
 def profile_chain(vendor: str) -> list[str]:
     """The profiles that apply to this TV, in order."""
     chain = ["base"]
-    if vendor != "base":
+    if vendor != "base" and (PROFILES / f"{vendor}.txt").is_file():
         chain.append(vendor)
     if vendor != "google-tv":
         chain.append("google-tv")
